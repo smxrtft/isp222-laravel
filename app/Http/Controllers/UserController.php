@@ -18,24 +18,30 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'=> 'required',
-            'email'=> 'required|email|unique:users',
-            'password'=> 'required|confirmed',
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|confirmed',
+            'avatar' => 'nullable|image',
 
         ]);
+
+        if ($request->hasFile('avatar')) {
+            $folder = date('Y-m-d');
+            $avatar = $request->file('avatar')->store("images/{$folder}");
+        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'avatar' => $avatar ?? null,
         ]);
-          
+
         Auth::login($user);
 
         session()->flash('success', 'Регистрация пройдена');
 
         return redirect()->route('home');
-
     }
 
     public function loginCreate()
@@ -47,20 +53,19 @@ class UserController extends Controller
     public function loginStore(Request $request)
     {
         $request->validate([
-            'email'=> 'required',
-            'password'=> 'required',
+            'email' => 'required',
+            'password' => 'required',
         ]);
 
         if (Auth::attempt([
             'email' => $request->email,
             'password' => $request->password,
         ])) {
-            
+
             return redirect()->route('home')->with('success', 'Авторизация пройдена');
         }
-        
-        return redirect()->back()->with('error', 'Некорректный логин или пароль');
 
+        return redirect()->back()->with('error', 'Некорректный логин или пароль');
     }
 
     public function logout()
@@ -68,6 +73,4 @@ class UserController extends Controller
         Auth::logout();
         return redirect()->route('login.create');
     }
-
-    
 }

@@ -31,7 +31,7 @@
             <label for="title" class="form-label">Title</label>
             <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" id="title" placeholder="Title" value="{{old('title')}}">
         </div>
-
+        
         <div class="mb-3">
             @error('content')
             <div class="alert alert-danger">{{ $message }}</div>
@@ -39,11 +39,11 @@
             <label for="content" class="form-label">Content</label>
             <textarea class="form-control @error('content') is-invalid @enderror" name="content" id="content" rows="5"> {{old('content')}} </textarea>
         </div>
-            @error('rubric_id')
-            <div class="alert alert-danger">{{ $message }}</div>
-            @enderror
+        @error('rubric_id')
+        <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
         <select class="form-select mb-3 @error('rubric_id') is-invalid @enderror" id="rubric_id" name="rubric_id">
-
+            
             <option selected>Выберите рубрику</option>
             @foreach ($rubrics as $key => $value)
             <option value="{{ $key }}" @if(old('rubric_id')==$key) selected @endif> {{ $value }} </option>
